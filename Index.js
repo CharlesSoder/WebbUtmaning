@@ -13,8 +13,12 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
 
+//cmd visar "a user" connectar och disconnectar
 io.on("connection", (socket) => {
   console.log("a user connected");
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
 });
 
 // Servern körs på 3000
