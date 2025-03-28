@@ -1,4 +1,5 @@
 // Har följt en socket tutorial och enligt socket.io instruktioner:
+// Socket.io används för servern och gör det automatiskt för oss
 // Nödvändiga funktioner
 const express = require("express");
 const app = express();

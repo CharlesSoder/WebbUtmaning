@@ -14,5 +14,10 @@
     <form id="form" action="">
       <input id="input" autocomplete="off" /><button>Send</button>
     </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      /* Socket.io klient, skapar en "IO" globalt. io() inom paranteser finns ingen URL eftersom den då fokuseras mot host som startar hemsidan*/
+      var socket = io();
+    </script>
   </body>
 </html>
