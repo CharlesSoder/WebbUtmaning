@@ -16,6 +16,7 @@ app.get("/", (req, res) => {
 let players = {}; // Sparar spelare som ansluter
 let board = Array(9).fill(null); // Tre i rad spelyta
 let currentTurn = "X"; // Börjar med att X alltid börjar spelet. Kommer ändra till varannan turn senare när spelet fungerar
+let gameActive = true; // en variabel för ifall spelet är igång eller någon har vunnit eller förlorat
 
 io.on("connection", (socket) => {
   console.log("a user connected");
