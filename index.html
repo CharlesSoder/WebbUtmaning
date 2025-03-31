@@ -3,7 +3,33 @@
   <head>
     <title>Socket.IO Tic-Tac-Toe</title>
     <style>
-      /*Kommer ändra styling för tre i rad här senare */
+      /*Fick enorm hjälp från Chatgpt för att styla, försökte själv men det blev alltid fel på form och position*/
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+      }
+      #board {
+        display: grid;
+        grid-template-columns: repeat(3, 100px);
+        grid-gap: 5px;
+        margin: 20px auto;
+        width: 310px;
+      }
+      .cell {
+        width: 100px;
+        height: 100px;
+        font-size: 2em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid black;
+        cursor: pointer;
+      }
+      #message {
+        font-size: 1.5em;
+        color: red;
+        margin-top: 10px;
+      }
     </style>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,16 +47,47 @@
       let playertype = null;
       let board = Array(9).fill(null);
 
+      // Här skapas den faktiska spelplanen och används dynamiskt så att den ändras under spelets gång
+      const boardElement = document.getElementById("board");
+      for (let i = 0; i < 9; i++) {
+        const cell = document.createElement("div");
+        cell.classList.add("cell");
+        cell.dataset.index = i;
+        cell.addEventListener("click", () => makeMove(i));
+        boardElement.appendChild(cell);
+      }
+
+      // Kollar vilken "type" av spelare "X" eller "O"
+      socket.on("playerType", (type) => {
+        playerType = type;
+        document.getElementById("status").textContent =
+          "You are Player " + type;
+      });
+
       // Bräduppdateringar, används för att uppdatera brädan när en förändring sker
       socket.on("boardUpdate", (newBoard) => {
         board = newBoard;
         updateBoard();
       });
 
+      // Reagerar eller lyssnar på gameover
+      socket.on("gameOver", (message) => {
+        document.getElementById("message").textContent = message;
+        setTimeout(() => {
+          document.getElementById("message").textContent = "";
+        }, 3000);
+      });
+
       // Ifall spelet är fullt = ge en alert, skulle bli fel om fler än 2 olika spelare skulle joina
       socket.on("full", (msg) => {
         alert(msg);
       });
+
+      function makeMove(index) {
+        if (board[index] === null) {
+          socket.emit("makeMove", index);
+        }
+      }
 
       function updateBoard() {
         document.querySelectorAll(".cell").forEach((cell, i) => {
