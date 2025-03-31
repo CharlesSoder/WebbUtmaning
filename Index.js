@@ -21,7 +21,30 @@ io.on("connection", (socket) => {
   });
 });
 
-// Servern körs på 3000
-server.listen(3000, () => {
-  console.log("listening on: 3000");
+//cmd visar msg
+io.on("connection", (socket) => {
+  socket.on("chat message", (msg) => {
+    console.log("message: " + msg);
+  });
+});
+
+//cmd visar msg till alla
+io.on("connection", (socket) => {
+  socket.on("chat message", (msg) => {
+    io.emit("chat message", msg);
+  });
+});
+
+io.emit("some event", {
+  someProperty: "some value",
+  otherProperty: "other value",
+}); // This will emit the event to all connected sockets
+
+io.on("connection", (socket) => {
+  socket.broadcast.emit("hi");
+});
+
+// Servern körs på 3000 och i mitt fall: http://192.168.56.1:3000
+server.listen(3000, "0.0.0.0", () => {
+  console.log("Listening on: http://0.0.0.0:3000");
 });
