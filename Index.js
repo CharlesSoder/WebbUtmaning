@@ -17,20 +17,23 @@ let players = {}; // Sparar spelare som ansluter
 let board = Array(9).fill(null); // Tre i rad spelyta
 let currentTurn = "X"; // Börjar med att X alltid börjar spelet. Kommer ändra till varannan turn senare när spelet fungerar
 
-//cmd visar "a user" connectar och disconnectar
 io.on("connection", (socket) => {
   console.log("a user connected");
-  // Tilldela X eller O
+  // Tilldela X eller O till socket id (Hjälp från chat GPT för att få det att fungera)
   if (!players.X) {
-    //Här ska en funktion för att ge en player id = spelare X
+    players.X = socket.id;
+    socket.emit("playerType", "X");
   } else if (!players.O) {
-    //Här ska en funktion för att ge en player id = spelare O
+    players.O = socket.id;
+    socket.emit("playerType", "O");
   } else {
     socket.emit("full", "Spelet är fullt!");
     return;
   }
   socket.on("disconnect", () => {
     console.log("user disconnected");
+    if (players.X === socket.id) delete players.X;
+    if (players.O === socket.id) delete players.O;
   });
 });
 
