@@ -51,28 +51,29 @@ io.on("connection", (socket) => {
   });
 });
 
-//cmd visar msg
-io.on("connection", (socket) => {
-  socket.on("chat message", (msg) => {
-    console.log("message: " + msg);
-  });
-});
+// Sparar dessa rader ifall chatbot i Tre i rad spel (FUNKTION)
+// //cmd visar msg
+// io.on("connection", (socket) => {
+//   socket.on("chat message", (msg) => {
+//     console.log("message: " + msg);
+//   });
+// });
 
-//cmd visar msg till alla
-io.on("connection", (socket) => {
-  socket.on("chat message", (msg) => {
-    io.emit("chat message", msg);
-  });
-});
+// //cmd visar msg till alla
+// io.on("connection", (socket) => {
+//   socket.on("chat message", (msg) => {
+//     io.emit("chat message", msg);
+//   });
+// });
 
-io.emit("some event", {
-  someProperty: "some value",
-  otherProperty: "other value",
-}); // This will emit the event to all connected sockets
+// io.emit("some event", {
+//   someProperty: "some value",
+//   otherProperty: "other value",
+// }); // This will emit the event to all connected sockets
 
-io.on("connection", (socket) => {
-  socket.broadcast.emit("hi");
-});
+// io.on("connection", (socket) => {
+//   socket.broadcast.emit("hi");
+// });
 
 // Servern körs på 3000 och i mitt fall: http://10.32.35.51:3000
 server.listen(3000, "0.0.0.0", () => {
