@@ -30,6 +30,20 @@ io.on("connection", (socket) => {
     socket.emit("full", "Spelet är fullt!");
     return;
   }
+
+  // Skicka info om hur brädan ska uppdateras
+  socket.emit("boardUpdate", board);
+
+  // Hantera spelardrag
+  socket.on("makeMove", (index) => {
+    if (socket.id !== players[currentTurn]) return; // Här betyder att bara "O" kan spela om "X" precis gjorde sitt drag och tvärt om
+    if (board[index] === null) {
+      board[index] = currentTurn;
+      currentTurn = currentTurn === "X" ? "O" : "X";
+      io.emit("boardUpdate", board);
+    }
+  });
+
   socket.on("disconnect", () => {
     console.log("user disconnected");
     if (players.X === socket.id) delete players.X;

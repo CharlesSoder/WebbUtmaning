@@ -10,16 +10,33 @@
     <title>Document</title>
   </head>
   <body>
-    <ul id="messages"></ul>
-    <form id="form" action="">
-      <input id="input" autocomplete="off" /><button>Send</button>
-    </form>
+    <h1>Välkommen till ULTIMATE Tic-Tac-Toe</h1>
+    <p id="status">Väntar på spelare...</p>
+    <div id="board"></div>
+    <p id="message"></p>
     <script src="/socket.io/socket.io.js"></script>
     <script>
       /* ytterligare variabler som kopplar till index.js */
       var socket = io();
       let playertype = null;
       let board = Array(9).fill(null);
+
+      // Bräduppdateringar, används för att uppdatera brädan när en förändring sker
+      socket.on("boardUpdate", (newBoard) => {
+        board = newBoard;
+        updateBoard();
+      });
+
+      // Ifall spelet är fullt = ge en alert, skulle bli fel om fler än 2 olika spelare skulle joina
+      socket.on("full", (msg) => {
+        alert(msg);
+      });
+
+      function updateBoard() {
+        document.querySelectorAll(".cell").forEach((cell, i) => {
+          cell.textContent = board[i] || "";
+        });
+      }
     </script>
   </body>
 </html>
