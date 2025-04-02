@@ -29,6 +29,12 @@
         color: red;
         margin-top: 10px;
       }
+      #reset {
+        margin-top: 15px;
+        padding: 10px 20px;
+        font-size: 1em;
+        cursor: pointer;
+      }
     </style>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -39,6 +45,7 @@
     <p id="status">Väntar på spelare...</p>
     <div id="board"></div>
     <p id="message"></p>
+    <button id="reset">Restart Game</button>
     <script src="/socket.io/socket.io.js"></script>
     <script>
       /* ytterligare variabler som kopplar till index.js */
@@ -82,6 +89,13 @@
         alert(msg);
       });
 
+      // servern ska lyssna på reset knappen här
+      socket.on("resetGame", () => {
+        board = Array(9).fill(null);
+        updateBoard();
+        document.getElementById("message").textContent = "";
+      });
+
       function makeMove(index) {
         if (board[index] === null) {
           socket.emit("makeMove", index);
@@ -93,6 +107,9 @@
           cell.textContent = board[i] || "";
         });
       }
+      document.getElementById("reset").addEventListener("click", () => {
+        socket.emit("resetGame");
+      });
     </script>
   </body>
 </html>
