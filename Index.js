@@ -99,13 +99,10 @@ io.on("connection", (socket) => {
 //   });
 // });
 
-// //cmd visar msg till alla
-// io.on("connection", (socket) => {
-//   socket.on("chat message", (msg) => {
-//     io.emit("chat message", msg);
-//   });
-// });
-
+// Chat funktion och hanterar chat till klient
+socket.on("chat message", (msg) => {
+  io.emit("chat message", msg);
+});
 // io.emit("some event", {
 //   someProperty: "some value",
 //   otherProperty: "other value",
