@@ -89,6 +89,10 @@ io.on("connection", (socket) => {
     if (players.X === socket.id) delete players.X;
     if (players.O === socket.id) delete players.O;
   });
+  // Chat funktion och hanterar chat till klient (flytta hit för annars kraschar den)
+  socket.on("chat message", (msg) => {
+    io.emit("chat message", msg);
+  });
 });
 
 // Sparar dessa rader ifall chatbot i Tre i rad spel (FUNKTION)
@@ -99,10 +103,6 @@ io.on("connection", (socket) => {
 //   });
 // });
 
-// Chat funktion och hanterar chat till klient
-socket.on("chat message", (msg) => {
-  io.emit("chat message", msg);
-});
 // io.emit("some event", {
 //   someProperty: "some value",
 //   otherProperty: "other value",
