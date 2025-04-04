@@ -41,11 +41,22 @@
     <title>Document</title>
   </head>
   <body>
-    <h1>Välkommen till ULTIMATE Tic-Tac-Toe</h1>
-    <p id="status">Väntar på spelare...</p>
-    <div id="board"></div>
-    <p id="message"></p>
-    <button id="reset">Restart Game</button>
+    <div class="container">
+      <div class="game-container">
+        <h1>Välkommen till ULTIMATE Tic-Tac-Toe</h1>
+        <p id="status">Väntar på spelare...</p>
+        <div id="board"></div>
+        <p id="message"></p>
+        <button id="reset">Restart Game</button>
+      </div>
+      <div class="chat-container">
+        <h3>Chat</h3>
+        <ul id="messages"></ul>
+        <form id="chat-form">
+          <input id="chat-input" autocomplete="off" /><button>Send</button>
+        </form>
+      </div>
+    </div>
     <script src="/socket.io/socket.io.js"></script>
     <script>
       /* ytterligare variabler som kopplar till index.js */
