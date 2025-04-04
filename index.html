@@ -121,6 +121,13 @@
       document.getElementById("reset").addEventListener("click", () => {
         socket.emit("resetGame");
       });
+
+      // Variabler för chatt funktioner som används nedan
+      var chatForm = document.getElementById("chat-form");
+
+      chatForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+      });
     </script>
   </body>
 </html>
