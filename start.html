@@ -5,16 +5,37 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <style>
+      input {
+        padding: 10px;
+        width: 200px;
+        margin-top: 10px;
+      }
+      button {
+        padding: 10px 20px;
+        margin-top: 15px;
+        cursor: pointer;
+      }
+    </style>
   </head>
   <body>
-    <div class="container">
+    <div class="login-container">
       <h1>Vänligen ange username:</h1>
-      <input type="text" id="username" placeholder="Skriv ditt namn här" />
-      <br />
-      <button onclick="submitUsername()">Joina Spelet</button>
+      <form action="/game" method="get" onsubmit="saveUsername()">
+        <input
+          type="text"
+          id="username"
+          placeholder="Skriv ditt namn här"
+          required
+        />
+        <button type="submit">Joina spelet</button>
+      </form>
     </div>
     <script>
-      function submitUsername() {}
+      function saveUsername() {
+        const username = document.getElementById("username").value;
+        localStorage.setItem("username", username);
+      }
     </script>
   </body>
 </html>

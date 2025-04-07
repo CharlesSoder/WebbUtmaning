@@ -2,14 +2,25 @@
 const express = require("express");
 const app = express();
 const http = require("http");
+const path = require("path"); // Path används för att start och index ska kunna kopplas
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 
-// Kopplar js sidan till (index.html)
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/index.html");
+  res.sendFile(path.join(__dirname, "start.html"));
 });
+
+// Kopplar js sidan till (index.html)
+app.get("/game", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
+// Statiska filer från mapp, säger att alla html, js och css ska kunan nås
+app.use(
+  "/socket.io",
+  express.static(path.join(__dirname, "node_modules/socket.io/client-dist"))
+);
 
 // (FYI) Socket.id är det id en user får när den ansluter och är inte players
 let players = {}; // Sparar spelare som ansluter
