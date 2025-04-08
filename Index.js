@@ -7,6 +7,8 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 
+const usernames = {}; // En metod för att Koppla socket.id till username
+
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "start.html"));
 });
@@ -66,6 +68,14 @@ io.on("connection", (socket) => {
   // Skicka info till html om hur brädan ska uppdateras
   socket.emit("boardUpdate", board);
 
+  socket.on("set username", (username) => {
+    usernames[socket.id] = username;
+    console.log(`Användare satt: ${username}`);
+
+    // Servermeddelande till chatten om en spelare (username) har anslutit, den skickas i den synliga chatten
+    io.emit("chat message", `Server: ${username} har anslutit till spelet.`);
+  });
+
   // Hantera spelardrag
   socket.on("makeMove", (index) => {
     if (!gameActive) return; // Spelet kan ej fortsättas ifall någon vinner
@@ -74,11 +84,20 @@ io.on("connection", (socket) => {
       board[index] = currentTurn;
       const winner = checkWinner();
       if (winner) {
-        gameActive = false; // Stoppa spelet
+        gameActive = false;
         io.emit(
           "gameOver",
           winner === "draw" ? "It's a draw!" : `player ${winner} wins!`
         );
+
+        // Lade till en till game over för mest att kunna lägga en message i chatten om vinnare
+        if (winner === "draw") {
+          io.emit("chat message", `Server: Spelet slutade oavgjort.`);
+        } else {
+          const winnerSocketId = players[winner];
+          const winnerName = usernames[winnerSocketId] || `Spelare ${winner}`;
+          io.emit("chat message", `Server: ${winnerName} (${winner}) Vann!`);
+        }
       } else {
         currentTurn = currentTurn === "X" ? "O" : "X";
       }
@@ -92,11 +111,14 @@ io.on("connection", (socket) => {
     currentTurn = "X";
     gameActive = true;
     io.emit("boardUpdate", board);
+    io.emit("chat message", `Server: Spelet har startats om.`);
     io.emit("resetGame");
   });
 
   socket.on("disconnect", () => {
     console.log("user disconnected", socket.id);
+    const username = usernames[socket.id] || "En spelare";
+    io.emit("chat message", `Server: ${username} har lämnat spelet.`);
     if (players.X === socket.id) delete players.X;
     if (players.O === socket.id) delete players.O;
   });
