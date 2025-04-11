@@ -104,6 +104,7 @@
       var socket = io();
       let playertype = null;
       let board = Array(9).fill(null);
+      let currentTurn = "X"; //Finns redan i js men behövs också här för nya updatestatus
 
       // Här skapas den faktiska spelplanen och används dynamiskt så att den ändras under spelets gång
       const boardElement = document.getElementById("board");
@@ -115,21 +116,26 @@
         boardElement.appendChild(cell);
       }
 
-      // Kollar vilken "type" av spelare "X" eller "O"
+      // Kollar vilken "type" av spelare "X" eller "O" lade till updatestatus funktion
       socket.on("playerType", (type) => {
         playerType = type;
         updateStatus();
       });
 
       function updateStatus() {
-        const turnText = x;
-        // ska visa vems turn det är, och sätta spelare till typ X eller O
+        const turnText =
+          currentTurn === playerType ? "Din tur!" : "Väntar på motståndare...";
+        document.getElementById(
+          "status"
+        ).textContent = `Du är Spelare ${playerType} | ${turnText}`;
       }
 
-      // Bräduppdateringar, används för att uppdatera brädan när en förändring sker
-      socket.on("boardUpdate", (newBoard) => {
-        board = newBoard;
+      // Bräduppdateringar, används för att uppdatera brädan när en förändring sker, update status här också för visa vems tur
+      socket.on("boardUpdate", (data) => {
+        board = data.board;
+        currentTurn = data.currentTurn;
         updateBoard();
+        updateStatus();
       });
 
       // Reagerar eller lyssnar på gameover

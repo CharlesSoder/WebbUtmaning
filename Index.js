@@ -66,7 +66,10 @@ io.on("connection", (socket) => {
   }
 
   // Skicka info till html om hur brädan ska uppdateras
-  socket.emit("boardUpdate", board);
+  io.emit("boardUpdate", {
+    board: board,
+    currentTurn: currentTurn,
+  });
 
   socket.on("set username", (username) => {
     usernames[socket.id] = username;
@@ -101,7 +104,10 @@ io.on("connection", (socket) => {
       } else {
         currentTurn = currentTurn === "X" ? "O" : "X";
       }
-      io.emit("boardUpdate", board);
+      io.emit("boardUpdate", {
+        board: board,
+        currentTurn: currentTurn,
+      });
     }
   });
 
@@ -110,7 +116,10 @@ io.on("connection", (socket) => {
     board = Array(9).fill(null);
     currentTurn = "X";
     gameActive = true;
-    io.emit("boardUpdate", board);
+    io.emit("boardUpdate", {
+      board: board,
+      currentTurn: currentTurn,
+    });
     io.emit("chat message", `Server: Spelet har startats om.`);
     io.emit("resetGame");
   });
