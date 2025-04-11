@@ -128,24 +128,7 @@ io.on("connection", (socket) => {
   });
 });
 
-// Sparar dessa rader ifall chatbot i Tre i rad spel (FUNKTION)
-// //cmd visar msg
-// io.on("connection", (socket) => {
-//   socket.on("chat message", (msg) => {
-//     console.log("message: " + msg);
-//   });
-// });
-
-// io.emit("some event", {
-//   someProperty: "some value",
-//   otherProperty: "other value",
-// }); // This will emit the event to all connected sockets
-
-// io.on("connection", (socket) => {
-//   socket.broadcast.emit("hi");
-// });
-
-// Servern körs på 3000 och i mitt fall: http://10.32.35.51:3000
+// Servern körs på 3000 och i mitt fall: http://10.32.35.51:3000 (hemma i ett test fungerade bara ethernet adressen för att koppla)
 server.listen(3000, "0.0.0.0", () => {
   console.log("Listening on: http://0.0.0.0:3000");
 });

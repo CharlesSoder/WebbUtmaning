@@ -118,9 +118,13 @@
       // Kollar vilken "type" av spelare "X" eller "O"
       socket.on("playerType", (type) => {
         playerType = type;
-        document.getElementById("status").textContent =
-          "You are Player " + type;
+        updateStatus();
       });
+
+      function updateStatus() {
+        const turnText = x;
+        // ska visa vems turn det är, och sätta spelare till typ X eller O
+      }
 
       // Bräduppdateringar, används för att uppdatera brädan när en förändring sker
       socket.on("boardUpdate", (newBoard) => {
