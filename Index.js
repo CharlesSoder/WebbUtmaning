@@ -81,29 +81,34 @@ io.on("connection", (socket) => {
 
   // Hantera spelardrag
   socket.on("makeMove", (index) => {
-    if (!gameActive) return; // Spelet kan ej fortsättas ifall någon vinner
+    if (!gameActive) return; // Spelet kan inte fortsättas att spelas ifall någon vinner
     if (socket.id !== players[currentTurn]) return; // Här betyder att bara "O" kan spela om "X" precis gjorde sitt drag och tvärt om
     if (board[index] === null) {
       board[index] = currentTurn;
       const winner = checkWinner();
       if (winner) {
         gameActive = false;
-        io.emit(
-          "gameOver",
-          winner === "draw" ? "It's a draw!" : `player ${winner} wins!`
-        );
 
-        // Lade till en till game over för mest att kunna lägga en message i chatten om vinnare
         if (winner === "draw") {
-          io.emit("chat message", `Server: Spelet slutade oavgjort.`);
+          io.emit("gameOver", "Oavgjort!");
+          io.emit("chat message", "//Server: Spelet slutade oavgjort.");
         } else {
           const winnerSocketId = players[winner];
-          const winnerName = usernames[winnerSocketId] || `Spelare ${winner}`;
-          io.emit("chat message", `Server: ${winnerName} (${winner}) Vann!`);
+          const winnerUsername =
+            usernames[winnerSocketId] || `Player ${winner}`;
+          io.emit(
+            "gameOver",
+            `${winnerUsername} ${winner} (${winner}) Är ULTIMATE TIC-TAC-TOE Vinnare!`
+          );
+          io.emit(
+            "chat message",
+            `//Server: ${winnerUsername} ${winner} (${winner}) har vunnit spelet!`
+          );
         }
       } else {
         currentTurn = currentTurn === "X" ? "O" : "X";
       }
+
       io.emit("boardUpdate", {
         board: board,
         currentTurn: currentTurn,

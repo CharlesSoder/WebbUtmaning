@@ -175,6 +175,7 @@
 
       // Variabler för chatt funktioner som används nedan // lade till username
       var username = localStorage.getItem("username") || "Okänd";
+      socket.emit("username har satts till:", username); // Emit username som användare sätter i start
       var chatForm = document.getElementById("chat-form");
       var chatInput = document.getElementById("chat-input");
       var messages = document.getElementById("messages");
