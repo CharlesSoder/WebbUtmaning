@@ -7,6 +7,13 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 
+// Funktion för att få nuvarande tiden, med timme, och minut (2-digit är för att 14:xx och xx:14 istället för 14.0:xx.x osv)
+// Använde tutorial från: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
+function getCurrentTime() {
+  const now = new Date();
+  return now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+}
+
 const usernames = {}; // En metod för att Koppla socket.id till username
 
 app.get("/", (req, res) => {
@@ -76,7 +83,10 @@ io.on("connection", (socket) => {
     console.log(`Användare satt: ${username}`);
 
     // Servermeddelande till chatten om en spelare (username) har anslutit, den skickas i den synliga chatten
-    io.emit("chat message", `Server: ${username} har anslutit till spelet.`);
+    io.emit(
+      "chat message",
+      `${getCurrentTime()} Server: ${username} har anslutit till spelet.`
+    );
   });
 
   // Hantera spelardrag
@@ -91,7 +101,10 @@ io.on("connection", (socket) => {
 
         if (winner === "draw") {
           io.emit("gameOver", "Oavgjort!");
-          io.emit("chat message", "//Server: Spelet slutade oavgjort.");
+          io.emit(
+            "chat message",
+            `${getCurrentTime()} //Server: Spelet slutade oavgjort.`
+          );
         } else {
           const winnerSocketId = players[winner];
           const winnerUsername =
@@ -102,7 +115,7 @@ io.on("connection", (socket) => {
           );
           io.emit(
             "chat message",
-            `//Server: ${winnerUsername} (${winner}) har vunnit spelet!`
+            `${getCurrentTime()} //Server: ${winnerUsername} (${winner}) har vunnit spelet!`
           );
         }
       } else {
@@ -138,7 +151,7 @@ io.on("connection", (socket) => {
   });
   // Chat funktion och hanterar chat till klient (flytta hit för annars kraschar den)
   socket.on("chat message", (msg) => {
-    io.emit("chat message", msg);
+    io.emit("chat message", `${getCurrentTime()} ${msg}`);
   });
 });
 
