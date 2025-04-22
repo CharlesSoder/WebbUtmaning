@@ -98,11 +98,11 @@ io.on("connection", (socket) => {
             usernames[winnerSocketId] || `Player ${winner}`;
           io.emit(
             "gameOver",
-            `${winnerUsername} ${winner} (${winner}) Är ULTIMATE TIC-TAC-TOE Vinnare!`
+            `${winnerUsername} (${winner}) Är ULTIMATE TIC-TAC-TOE Vinnare!`
           );
           io.emit(
             "chat message",
-            `//Server: ${winnerUsername} ${winner} (${winner}) har vunnit spelet!`
+            `//Server: ${winnerUsername} (${winner}) har vunnit spelet!`
           );
         }
       } else {
