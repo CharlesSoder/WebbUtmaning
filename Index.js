@@ -8,7 +8,6 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 
 // Funktion för att få nuvarande tiden, med timme, och minut (2-digit är för att 14:xx och xx:14 istället för 14.0:xx.x osv)
-// Använde tutorial från: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 function getCurrentTime() {
   const now = new Date();
   return now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -117,6 +116,8 @@ io.on("connection", (socket) => {
             "chat message",
             `${getCurrentTime()} //Server: ${winnerUsername} (${winner}) har vunnit spelet!`
           );
+          const loser = winner === "X" ? "O" : "X";
+          currentTurn = loser;
         }
       } else {
         currentTurn = currentTurn === "X" ? "O" : "X";
@@ -132,7 +133,6 @@ io.on("connection", (socket) => {
   // Hantera spelåterställning
   socket.on("resetGame", () => {
     board = Array(9).fill(null);
-    currentTurn = "X";
     gameActive = true;
     io.emit("boardUpdate", {
       board: board,
