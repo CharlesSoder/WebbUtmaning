@@ -15,16 +15,17 @@ function getCurrentTime() {
 
 const usernames = {}; // En metod för att Koppla socket.id till username
 
+// Använder sig av express (start.html), dirname används för att rikta filen mot mappen som används
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "start.html"));
 });
 
-// Kopplar js sidan till (index.html)
+// Kopplar js sidan till (index.html) genom URL domänen /game
 app.get("/game", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-// Statiska filer från mapp, säger att alla html, js och css ska kunan nås
+// Statiska filer från mapp, säger att alla html och js och css ska kunan nås
 app.use(
   "/socket.io",
   express.static(path.join(__dirname, "node_modules/socket.io/client-dist"))
@@ -32,10 +33,11 @@ app.use(
 
 // (FYI) Socket.id är det id en user får när den ansluter och är inte players
 let players = {}; // Sparar spelare som ansluter
-let board = Array(9).fill(null); // Tre i rad spelyta
+let board = Array(9).fill(null); // Tre i rad spelyta, fyller en array med inget (tömmer den)
 let currentTurn = "X"; // Börjar med att X alltid börjar spelet. Kommer ändra till varannan turn senare när spelet fungerar
 let gameActive = true; // en variabel för ifall spelet är igång eller någon har vunnit eller förlorat
 
+// Enkelt sätt att sätta kombinationer så man kan vinna, alltså få tre i rad
 const winningCombinations = [
   [0, 1, 2],
   [3, 4, 5],
@@ -71,7 +73,7 @@ io.on("connection", (socket) => {
     return;
   }
 
-  // Skicka info till html om hur brädan ska uppdateras
+  // Skicka info till html om hur brädan ska uppdateras och current turn för att den också ska uppdateras
   io.emit("boardUpdate", {
     board: board,
     currentTurn: currentTurn,
@@ -105,6 +107,7 @@ io.on("connection", (socket) => {
             `${getCurrentTime()} //Server: Spelet slutade oavgjort.`
           );
         } else {
+          // Sätter dit vinnare och tilldelar winnerusername till socket.id
           const winnerSocketId = players[winner];
           const winnerUsername =
             usernames[winnerSocketId] || `Player ${winner}`;
@@ -130,7 +133,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  // Hantera spelåterställning
+  // Hantera återställningen av board och i chatten emit (skriver ut) att spelet har startat om
   socket.on("resetGame", () => {
     board = Array(9).fill(null);
     gameActive = true;
@@ -142,6 +145,7 @@ io.on("connection", (socket) => {
     io.emit("resetGame");
   });
 
+  // Ifall en spelare tappar connection tas spelaren bort från playerx eller o för att någon annan ska kunna ta den rollen
   socket.on("disconnect", () => {
     console.log("user disconnected", socket.id);
     const username = usernames[socket.id] || "En spelare";
