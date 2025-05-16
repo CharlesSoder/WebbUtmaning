@@ -95,7 +95,11 @@
       <h3>Chat</h3>
       <ul id="messages"></ul>
       <form id="chat-form">
-        <input id="chat-input" autocomplete="off" /><button>Send</button>
+        <input
+          id="chat-input"
+          placeholder="Skriv..."
+          autocomplete="off"
+        /><button>Send</button>
       </form>
     </div>
     <script src="/socket.io/socket.io.js"></script>
@@ -138,7 +142,7 @@
         updateStatus();
       });
 
-      // Reagerar eller lyssnar på gameover
+      // Reagerar/lyssnar på gameover, sätter en timeout så att ett message kommer upp i 3000 millisekunder (3 sek)
       socket.on("gameOver", (message) => {
         document.getElementById("message").textContent = message;
         setTimeout(() => {
@@ -146,14 +150,14 @@
         }, 3000);
       });
 
-      // Ifall spelet är fullt = ge en alert, skulle bli fel om fler än 2 olika spelare skulle joina
+      // Ifall spelet är fullt = ge en alert, skulle bli fel om fler än 2 olika spelare skulle joina (eftersom tic-tac-toe är ett 2 spelare spel)
       socket.on("full", (msg) => {
         alert(msg);
       });
 
-      // servern ska lyssna på reset knappen här
+      // servern ska lyssna på reset knappen här,
       socket.on("resetGame", () => {
-        board = Array(9).fill(null);
+        board = Array(9).fill(null); //fyller array med inget (tömmer den)
         updateBoard();
         document.getElementById("message").textContent = "";
       });
@@ -165,6 +169,7 @@
       }
 
       function updateBoard() {
+        //cell används för rutor i tic-tac-toe brädan
         document.querySelectorAll(".cell").forEach((cell, i) => {
           cell.textContent = board[i] || "";
         });
